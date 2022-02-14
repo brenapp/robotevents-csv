@@ -27,11 +27,9 @@ router.get("/:sku/teams", async (ctx, next) => {
 
   const teams = await event.teams();
   for (const team of teams) {
-    response += `${team.number},${escape(team.team_name)},${
-      team.grade
-    },${escape(team.organization)},${team.location.city},${
-      team.location.region
-    },${team.location.country}\n`;
+    response += `${team.number},${escape(team.team_name)},${team.grade
+      },${escape(team.organization)},${team.location.city},${team.location.region
+      },${team.location.country}\n`;
   }
 
   ctx.body = response;
@@ -120,6 +118,37 @@ router.get("/:sku/rankings/:division", async (ctx, next) => {
 
   return next();
 });
+
+// Skills Leaderboard
+router.get("/skills/:program/:grade", async (ctx, next) => {
+
+  const program = ctx.params["program"];
+  const grade = ctx.params["grade"];
+  const season = robotevents.seasons.current(program);
+
+  const region = ctx.query["region"];
+  const post_season = ctx.query["post_season"];
+    
+  if (!season) {
+    ctx.body = "No such season";
+    return;
+  };
+
+  const skills = await robotevents.v1.getSkillsLeaderboard(season, {
+    grade_level: grade,
+    region,
+    post_season,
+  });
+
+  ctx.body = "";
+  for (const { event, rank, scores, team } of skills) {
+    ctx.body += `${rank}, ${scores.driver + scores.programming}, ${scores.driver}, ${scores.programming}, ${scores.maxDriver}, ${scores.maxProgramming}, ${team.team}, ${team.teamName}, ${event.sku}\n`;
+  };
+
+
+  return next();
+});
+
 
 // Authenticate with the API
 robotevents.authentication.setBearer(tokens.robotevents);
