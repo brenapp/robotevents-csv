@@ -29,7 +29,7 @@ Team, Team Name, Grade, Organization, City, State, Country
 > ...
 > ```
 
-## `/:sku/teams`
+## `/:sku/skills`
 Returns a summary of the skills scores of an event. Output columns look like
 ```
 Team, Driver Attempts, Driver Highscore, Programming Attempts, Programming High School
