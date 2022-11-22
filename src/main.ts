@@ -36,6 +36,55 @@ router.get("/:sku/teams", async (ctx, next) => {
   return next();
 });
 
+const ROUND_NAMES = {
+  1: "Practice",
+  2: "Qualification",
+  3: "Quarterfinals",
+  4: "Semifinals",
+  5: "Finals",
+  6: "Round of 16",
+};
+
+const ROUND_NAMES_SHORT = {
+  1: "P",
+  2: "Q",
+  3: "QF",
+  4: "SF",
+  5: "F",
+  6: "R16",
+};
+
+router.get("/:sku/matches/:division", async (ctx, next) => {
+  const sku = ctx.params["sku"];
+  const division = parseInt(ctx.params["division"]) ?? 0;
+
+  let team = ctx.query["team"];
+  if (team) {
+    team = team.split(",");
+  } else {
+    team = [];
+  }
+
+  const event = await robotevents.events.get(sku);
+  if (!event) {
+    ctx.body = "No such event";
+    return next();
+  }
+  console.log(event.id);
+
+  let response = "";
+
+  const matches = await event.matches(division, { team });
+  for (const match of matches) {
+    response += `${match.division},${match.field},${match.scheduled},${ROUND_NAMES_SHORT[match.round]}${match.instance} ${match.matchnum}\n`;
+  };
+
+  ctx.body = response;
+  return next();
+
+});
+
+
 async function getSkillsRecord(event: Event, team: Team) {
   const runs = await event.skills({ team: [team.id] });
 
@@ -128,7 +177,7 @@ router.get("/skills/:program/:grade", async (ctx, next) => {
 
   const region = ctx.query["region"];
   const post_season = ctx.query["post_season"];
-    
+
   if (!season) {
     ctx.body = "No such season";
     return;

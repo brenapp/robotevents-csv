@@ -1515,6 +1515,11 @@
     "shelljs" "^0.8.4"
     "typedoc-default-themes" "^0.10.2"
 
+"typescript@>=3.8.3":
+  "integrity" "sha512-QCh+85mCy+h0IGff8r5XWzOVSbBO+KfeYrMQh7NJ58QujwcE22u+NUSmUxqF+un70P9GXKxa2HCNiTTMJknyjQ=="
+  "resolved" "https://registry.npmjs.org/typescript/-/typescript-4.8.4.tgz"
+  "version" "4.8.4"
+
 "uglify-js@^3.1.4":
   "integrity" "sha512-x+xdeDWq7FiORDvyIJ0q/waWd4PhjBNOm5dQUOq2AKC0IEjxOS66Ha9tctiVDGcRQuh69K7fgU5oRuTK4cysSg=="
   "resolved" "https://registry.npmjs.org/uglify-js/-/uglify-js-3.15.0.tgz"
