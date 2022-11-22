@@ -15,6 +15,8 @@ function escape(text: string) {
 }
 
 router.get("/:sku/teams", async (ctx, next) => {
+  robotevents.authentication.setBearer(tokens.robotevents);
+
   const sku = ctx.params["sku"];
 
   const event = await robotevents.events.get(sku);
@@ -55,6 +57,8 @@ const ROUND_NAMES_SHORT = {
 };
 
 router.get("/:sku/matches/:division", async (ctx, next) => {
+  robotevents.authentication.setBearer(tokens.robotevents);
+
   const sku = ctx.params["sku"];
   const division = parseInt(ctx.params["division"]) ?? 0;
 
@@ -86,6 +90,8 @@ router.get("/:sku/matches/:division", async (ctx, next) => {
 
 
 async function getSkillsRecord(event: Event, team: Team) {
+  robotevents.authentication.setBearer(tokens.robotevents);
+
   const runs = await event.skills({ team: [team.id] });
 
   let attempts = {
@@ -116,6 +122,8 @@ async function getSkillsRecord(event: Event, team: Team) {
 }
 
 router.get("/:sku/skills", async (ctx, next) => {
+  robotevents.authentication.setBearer(tokens.robotevents);
+
   const sku = ctx.params["sku"];
 
   const event = await robotevents.events.get(sku);
@@ -144,6 +152,8 @@ router.get("/:sku/skills", async (ctx, next) => {
 });
 
 router.get("/:sku/rankings/:division", async (ctx, next) => {
+  robotevents.authentication.setBearer(tokens.robotevents);
+
   const sku = ctx.params["sku"];
   const division = ctx.params["division"];
 
@@ -170,6 +180,7 @@ router.get("/:sku/rankings/:division", async (ctx, next) => {
 
 // Skills Leaderboard
 router.get("/skills/:program/:grade", async (ctx, next) => {
+  robotevents.authentication.setBearer(tokens.robotevents);
 
   const program = ctx.params["program"];
   const grade = ctx.params["grade"];
@@ -200,7 +211,6 @@ router.get("/skills/:program/:grade", async (ctx, next) => {
 
 
 // Authenticate with the API
-robotevents.authentication.setBearer(tokens.robotevents);
 
 app.use(router.routes()).use(router.allowedMethods());
 
