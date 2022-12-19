@@ -7,7 +7,7 @@
     "@koa/router": "^9.4.0",
     "express": "^4.17.1",
     "koa": "^2.13.0",
-    "robotevents": "^2.0.1"
+    "robotevents": "^2.7.0"
   },
   "devDependencies": {
     "@types/koa": "^2.11.6",

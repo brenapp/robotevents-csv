@@ -205,9 +205,95 @@ router.get("/skills/:program/:grade", async (ctx, next) => {
     ctx.body += `${rank}, ${scores.driver + scores.programming}, ${scores.driver}, ${scores.programming}, ${scores.maxDriver}, ${scores.maxProgramming}, ${team.team}, ${team.teamName}, ${event.sku}\n`;
   };
 
+  return next();
+});
+
+
+router.get("/teams/:program/:team/events", async (ctx, next) => {
+  robotevents.authentication.setBearer(tokens.robotevents);
+
+  const team = await robotevents.teams.get(ctx.params["team"], ctx.params["program"]);
+  const season = await robotevents.seasons.current(ctx.params["program"]);
+
+  if (!season) {
+    ctx.body = "No such season";
+    return next();
+  }
+
+  if (!team) {
+    ctx.body = "No such team";
+    return next();
+  }
+
+  const start = ctx.query["start"];
+  const end = ctx.query["end"];
+  const level = ctx.query["level"];
+
+  const events = await team.events({ start, end, level, season: [season] })
+    .then(events => events.array())
+    .then(events => events.sort((a, b) => new Date(a.start).getTime() - new Date(b.start).getTime()));
+
+  ctx.body = "";
+  for (const event of events) {
+    ctx.body += `${event.id},${event.sku},${event.name},${event.level},${event.start},${event.end}  \n`;
+  };
 
   return next();
 });
+
+router.get("/teams/:program/:team/awards", async (ctx, next) => {
+  robotevents.authentication.setBearer(tokens.robotevents);
+
+  const team = await robotevents.teams.get(ctx.params["team"], ctx.params["program"]);
+  const season = await robotevents.seasons.current(ctx.params["program"]);
+
+  if (!season) {
+    ctx.body = "No such season";
+    return next();
+  }
+
+  if (!team) {
+    ctx.body = "No such team";
+    return next();
+  }
+
+  const awards = await team.awards({ season: [season] })
+
+  ctx.body = "";
+  for (const award of awards) {
+    ctx.body += `${award.id},${award.order},${award.event.code},${award.event.name},${award.title},${award.qualifications}\n`
+  };
+
+  return next();
+});
+
+router.get("/teams/:program/:team/matches", async (ctx, next) => {
+  robotevents.authentication.setBearer(tokens.robotevents);
+
+  const team = await robotevents.teams.get(ctx.params["team"], ctx.params["program"]);
+  const season = await robotevents.seasons.current(ctx.params["program"]);
+
+  if (!season) {
+    ctx.body = "No such season";
+    return next();
+  }
+
+  if (!team) {
+    ctx.body = "No such team";
+    return next();
+  }
+
+  const matches = await team.matches({ season: [season] })
+
+  ctx.body = "";
+  for (const match of matches) {
+    ctx.body += `${match.event.code},${match.division},${match.field},${match.scheduled},${ROUND_NAMES_SHORT[match.round]}${match.instance} ${match.matchnum}\n`;
+  };
+
+  return next();
+});
+
+
 
 
 // Authenticate with the API
