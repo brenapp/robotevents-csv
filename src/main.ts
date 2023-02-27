@@ -105,6 +105,7 @@ async function getSkillsRecord(event: Event, team: Team) {
   };
 
   for (const run of runs) {
+    ``
     if (run.type == "programming") {
       attempts.programming++;
       if (run.score > highscore.programming) {
@@ -170,7 +171,7 @@ router.get("/:sku/rankings/:division", async (ctx, next) => {
     .sort((a, b) => a.rank - b.rank);
 
   for (const rank of rankings) {
-    response += `${rank.rank},${rank.team.name},${rank.wp},${rank.ap},${rank.sp},${rank.wins},${rank.losses},${rank.ties},${rank.high_score}\n`;
+    response += `${rank.rank},${escape(rank.team.name)},${rank.wp},${rank.ap},${rank.sp},${rank.wins},${rank.losses},${rank.ties},${rank.high_score}\n`;
   }
 
   ctx.body = response;
